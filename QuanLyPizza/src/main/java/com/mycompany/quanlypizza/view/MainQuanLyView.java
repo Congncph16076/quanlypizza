@@ -55,6 +55,7 @@ public class MainQuanLyView extends JFrame{
             ,pnSanPham,pnNhanVien,pnKhachHang,pnThongKe;
     
     PnQuanLyKhuyenMai khuyenMaiPanel;
+    PnQuanLyNhanVienView nhanVienPanel;
     
     JLabel btnClose,btnMinimize,lblBanHang,lblKhuyenMai,lblNhapHang
             ,lblSanPham,lblNhanVien,lblKhachHang,lblThongKe;
@@ -168,6 +169,13 @@ public class MainQuanLyView extends JFrame{
         khuyenMaiPanel = new PnQuanLyKhuyenMai();
         pnKhuyenMai.setLayout(new BorderLayout());
         pnKhuyenMai.add(khuyenMaiPanel, BorderLayout.CENTER);
+        
+        
+        nhanVienPanel = new PnQuanLyNhanVienView();
+        pnNhanVien.setLayout(new BorderLayout());
+        pnNhanVien.add(nhanVienPanel, BorderLayout.CENTER);
+        lblNhanVien.setVisible(true);
+        
         
         pnMain.add(pnCard);
         con.add(pnMain);
