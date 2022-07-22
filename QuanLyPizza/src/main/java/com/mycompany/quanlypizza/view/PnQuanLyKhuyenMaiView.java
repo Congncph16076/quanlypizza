@@ -29,9 +29,9 @@ import org.jfree.ui.DateCellRenderer;
  *
  * @author congc
  */
-public class PnQuanLyKhuyenMai extends  JPanel{
+public class PnQuanLyKhuyenMaiView extends  JPanel{
 
-    public PnQuanLyKhuyenMai() {
+    public PnQuanLyKhuyenMaiView() {
         
         Main.changLNF("Windows");
         addControls();

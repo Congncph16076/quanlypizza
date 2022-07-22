@@ -54,7 +54,7 @@ public class MainQuanLyView extends JFrame{
     JPanel  pnTille,pnMenuLeft,pnCard,pnBanHang,pnKhuyenMai,pnNhapHang
             ,pnSanPham,pnNhanVien,pnKhachHang,pnThongKe;
     
-    PnQuanLyKhuyenMai khuyenMaiPanel;
+    PnQuanLyKhuyenMaiView khuyenMaiPanel;
     PnQuanLyNhanVienView nhanVienPanel;
     
     JLabel btnClose,btnMinimize,lblBanHang,lblKhuyenMai,lblNhapHang
@@ -166,7 +166,7 @@ public class MainQuanLyView extends JFrame{
         
         //ADD panel bán hàng + khuyến mãi (không phân quyền)
         
-        khuyenMaiPanel = new PnQuanLyKhuyenMai();
+        khuyenMaiPanel = new PnQuanLyKhuyenMaiView();
         pnKhuyenMai.setLayout(new BorderLayout());
         pnKhuyenMai.add(khuyenMaiPanel, BorderLayout.CENTER);
         
