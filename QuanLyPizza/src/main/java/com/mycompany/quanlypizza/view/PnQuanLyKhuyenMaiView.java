@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import org.jfree.ui.DateCellRenderer;
+
 
 /**
  *
@@ -146,6 +146,15 @@ public class PnQuanLyKhuyenMaiView extends  JPanel{
         pnNgayKT.add(dateKT);
         pnTextField.add(pnNgayKT);
         
+         Dimension lblSize = lblTen.getPreferredSize();
+        lblMa.setPreferredSize(lblSize);
+        lblTen.setPreferredSize(lblSize);
+        lblPhanTram.setPreferredSize(lblSize);
+        lblDieuKien.setPreferredSize(lblSize);
+        lblNgayBD.setPreferredSize(lblSize);
+        lblNgayKT.setPreferredSize(lblSize);
+        dateBD.setPreferredSize(txtDieuKien.getPreferredSize());
+        dateKT.setPreferredSize(txtDieuKien.getPreferredSize());
         pnMain.add(pnTextField);
         
         //BUTTON PANEL
@@ -176,11 +185,11 @@ public class PnQuanLyKhuyenMaiView extends  JPanel{
         JScrollPane scrTblKhuyenMai = new JScrollPane(tblKhuyenMai);
         
         
-        DefaultTableCellRenderer centerCellRenderer = new  DateCellRenderer();
+        DefaultTableCellRenderer centerCellRenderer = new  DefaultTableCellRenderer();
         centerCellRenderer.setHorizontalAlignment(JLabel.CENTER);
         tblKhuyenMai.getColumnModel().getColumn(2).setCellRenderer(centerCellRenderer);
         
-        DefaultTableCellRenderer rightCellRenderer = new  DateCellRenderer();
+        DefaultTableCellRenderer rightCellRenderer = new  DefaultTableCellRenderer();
         rightCellRenderer.setHorizontalAlignment(JLabel.CENTER);
         tblKhuyenMai.getColumnModel().getColumn(3).setCellRenderer(rightCellRenderer);
         tblKhuyenMai.getColumnModel().getColumn(4).setCellRenderer(rightCellRenderer);
