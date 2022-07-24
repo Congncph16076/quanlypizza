@@ -178,6 +178,7 @@ public class PnQuanLyKhuyenMaiView extends  JPanel{
         btnSua.setIcon(new ImageIcon("image/Pencil-icon.png"));
         pnButton.add(btnThem);
         pnButton.add(btnSua);
+        pnMain.add(pnButton);
         btnSua.setPreferredSize(btnThem.getPreferredSize());
         
         //TABLE
