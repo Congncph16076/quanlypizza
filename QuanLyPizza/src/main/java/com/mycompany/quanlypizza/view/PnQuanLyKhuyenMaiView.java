@@ -7,12 +7,23 @@ package com.mycompany.quanlypizza.view;
 
 import com.mycompany.quanlypizza.common.MyTableCommon;
 import com.mycompany.quanlypizza.common.TransparentPanelCommon;
+import com.mycompany.quanlypizza.enity.GiamGia;
 import com.mycompany.quanlypizza.main.Main;
+import com.mycompany.quanlypizza.service.GiamGiaServiceImp;
 import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -38,7 +49,7 @@ public class PnQuanLyKhuyenMaiView extends  JPanel{
         addEvents();
     }
 
-    
+    private GiamGiaServiceImp giamGiaServiceImp;
     final  Color colorPanel = new Color(247,247,247);
     
     JButton btnReset,btnThem,btnSua;
@@ -210,13 +221,132 @@ public class PnQuanLyKhuyenMaiView extends  JPanel{
         
         
         this.add(pnMain , BorderLayout.CENTER);
+        loadDataTblKhuyenMai();
         
     }   
 
     private void addEvents() {
+        tblKhuyenMai.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyClickTblKhuyenMai();
+            }
 
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+
+        });
+        btnReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtMa.setText("");
+                txtTen.setText("");
+                txtPhanTram.setText("");
+                txtDieuKien.setText("");
+                dateBD.setDate(null);
+                dateKT.setDate(null);
+                loadDataTblKhuyenMai();
+            }
+        });
+        btnThem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyThemKhuyenMai();
+            }
+
+        });
+        btnSua.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLySuaKhuyenMai();
+            }
+
+        });
+    }
+    private void loadDataTblKhuyenMai() {
+        dtmKhuyenMai.setRowCount(0);
+        giamGiaServiceImp = new GiamGiaServiceImp();
+
+        List<GiamGia> dsg = giamGiaServiceImp.getDanhSachMaGiam();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        DecimalFormat dcf = new DecimalFormat(">###,###");
+
+        for (GiamGia gg : dsg) {
+            Vector vec = new Vector();
+            vec.add(gg.getMaGiam());
+            vec.add(gg.getTenGiamGia());
+            vec.add(gg.getPhanTramGiam());
+            vec.add(dcf.format(gg.getDieuKien()));
+            vec.add(sdf.format(gg.getNgayBD()));
+            vec.add(sdf.format(gg.getNgayKT()));
+           
+            Date now = new Date();
+            if (gg.getNgayBD().before(now) && gg.getNgayKT().after(now)) {
+                vec.add("Có hiệu lực");
+            } else {
+                vec.add("Hết hiệu lực");
+            }
+            dtmKhuyenMai.addRow(vec);
+        }
     }
     
-    
+     private void xuLyClickTblKhuyenMai() {
+        int row = tblKhuyenMai.getSelectedRow();
+        if (row > -1) {
+            String ma = tblKhuyenMai.getValueAt(row, 0) + "";
+            String ten = tblKhuyenMai.getValueAt(row, 1) + "";
+            String phanTram = tblKhuyenMai.getValueAt(row, 2) + "";
+            String dieuKien = tblKhuyenMai.getValueAt(row, 3) + "";
+            String start = tblKhuyenMai.getValueAt(row, 4) + "";
+            String end = tblKhuyenMai.getValueAt(row, 5) + "";
+
+            dieuKien = dieuKien.replace(">", "");
+            dieuKien = dieuKien.replace(",", "");
+            Date ngayBD = new Date();
+            Date ngayKT = new Date();
+            try {
+                ngayBD = new SimpleDateFormat("dd/MM/yyyy").parse(start);
+                ngayKT = new SimpleDateFormat("dd/MM/yyyy").parse(end);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            txtMa.setText(ma);
+            txtTen.setText(ten);
+            txtPhanTram.setText(phanTram);
+            txtDieuKien.setText(dieuKien);
+            dateBD.setDate(ngayBD);
+            dateKT.setDate(ngayKT);
+        }
+    }
+     private void xuLyThemKhuyenMai() {
+        giamGiaServiceImp = new GiamGiaServiceImp();
+        boolean flag = giamGiaServiceImp.themMaGiam(txtTen.getText(), txtPhanTram.getText(), txtDieuKien
+                .getText(), dateBD.getDate(), dateKT.getDate());
+        if (flag) {
+            loadDataTblKhuyenMai();
+        }
+    }
+      private void xuLySuaKhuyenMai() {
+        giamGiaServiceImp = new GiamGiaServiceImp();
+        boolean flag = giamGiaServiceImp.suaMaGiam(txtMa.getText(),txtTen.getText(), txtPhanTram.getText(), txtDieuKien
+                .getText(), dateBD.getDate(), dateKT.getDate());
+        if (flag) {
+            loadDataTblKhuyenMai();
+        }
+    }
     
 }
