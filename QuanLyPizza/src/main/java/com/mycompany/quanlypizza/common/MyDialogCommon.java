@@ -56,7 +56,8 @@ public class MyDialogCommon extends JDialog {
         pnButton = new JPanel();
         lblIcon = new JLabel();
         lblContent = new JLabel();
-        lblClose = new JLabel();
+        btnOK = new JButton("OK");
+        btnCancel = new JButton("Cancel");
 
         pnMain.setLayout(new BoxLayout(pnMain, BoxLayout.Y_AXIS));
         pnTop.setLayout(new FlowLayout());
@@ -136,27 +137,23 @@ public class MyDialogCommon extends JDialog {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
         });
 
-        btnOK.addMouseListener((MouseListener) new ActionListener() {
+        btnOK.addActionListener( new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 closeDialog();
@@ -164,7 +161,7 @@ public class MyDialogCommon extends JDialog {
             }
         });
 
-        btnCancel.addMouseListener((MouseListener) new ActionListener() {
+        btnCancel.addActionListener( new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 closeDialog();
