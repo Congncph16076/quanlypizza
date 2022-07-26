@@ -4,10 +4,11 @@ import com.mycompany.quanlypizza.enity.GiamGia;
 import com.mycompany.quanlypizza.util.Connect;
 import java.util.ArrayList;
 import java.util.List;
-import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public class GiamGiaRespository {
@@ -23,7 +24,7 @@ public class GiamGiaRespository {
     public Boolean save(GiamGia gg) {
         Transaction trans = null;
         try (Session session = Connect.getFACTORY().openSession()) {
-            trans = this.session.beginTransaction();
+            trans = session.beginTransaction();
             session.save(gg);
             trans.commit();
             return true;
@@ -35,12 +36,12 @@ public class GiamGiaRespository {
     }
 
     @Transactional
+    @Modifying
     public Boolean suaMaGiamGia(GiamGia gg) {
         Transaction trans = null;
         try (Session session = Connect.getFACTORY().openSession()) {
-            trans = this.session.beginTransaction();
-            Query query = session.createQuery(" update GiamGia set tenGiamGia = :tenGiamGia ,  phanTramGiam = :phanTramGiam "
-                    + ", dieuKien = :dieuKien, ngayBD = :ngayBD , ngayKT = :ngayKT"
+            trans = session.beginTransaction();
+            Query query = session.createQuery(" update com.mycompany.quanlypizza.enity.GiamGia set tenGiamGia = :tenGiamGia "
                     + " where maGiam = :maGiam");
             query.setParameter("tenGiamGia", gg.getTenGiamGia());
             query.setParameter("phanTramGiam", gg.getPhanTramGiam());

@@ -1,8 +1,14 @@
 package com.mycompany.quanlypizza.view;
 
+import com.mycompany.quanlypizza.common.MyDialogCommon;
 import com.mycompany.quanlypizza.common.MyTableCommon;
 import com.mycompany.quanlypizza.common.TransparentPanelCommon;
+import com.mycompany.quanlypizza.common.xuLyExcellCommon;
+import com.mycompany.quanlypizza.enity.LoaiSP;
+import com.mycompany.quanlypizza.enity.SanPham;
 import com.mycompany.quanlypizza.main.Main;
+import com.mycompany.quanlypizza.service.LoaiServiceImp;
+import com.mycompany.quanlypizza.service.SanPhamServiceImp;
 import com.toedter.calendar.demo.DemoTable;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -11,9 +17,14 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,6 +37,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.MouseInputListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -38,6 +51,8 @@ public class PnQuanLySanPhamView extends JPanel {
         addEvents();
 
     }
+    SanPhamServiceImp sanPhamServiceImp;
+    LoaiServiceImp loaiServiceImp = new LoaiServiceImp();
 
     final Color colorPanel = new Color(247, 247, 247);
     MyTableCommon tblSanPham;
@@ -247,7 +262,8 @@ public class PnQuanLySanPhamView extends JPanel {
         JScrollPane srcTblSanPham = new JScrollPane(tblSanPham);
         pnTable.add(srcTblSanPham, BorderLayout.CENTER);
         this.add(pnTable);
-
+        loadDataCmbLoai();
+        loadDataLenBangSanPham();
     }
 
     private void addEvents() {
@@ -261,6 +277,84 @@ public class PnQuanLySanPhamView extends JPanel {
                 txtsoLuong.setText("");
                 cmbLoai.setSelectedIndex(0);
             }
+        });
+        tblSanPham.addMouseListener(new MouseInputListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyClickTblSanPham();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            }
+
+        });
+        cmbLoai.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xulyThemLoai();
+            }
+        });
+        btnThem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyThemSanPham();
+            }
+
+        });
+        btnChonAnh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyChonAnh();
+            }
+
+        });
+        txtTimKiem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyTimKiem();
+            }
+        });
+        btnSua.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLySuaSanPham();
+            }
+
+        });
+        btnNhapExcel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyNhapExcel();
+            }
+
+        });
+        btnXuatExcel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyXuatExcel();
+            }
+
         });
     }
 
@@ -289,5 +383,181 @@ public class PnQuanLySanPhamView extends JPanel {
         }
 
         return null;
+    }
+
+    private void loadDataCmbLoai() {
+        loaiServiceImp = new LoaiServiceImp();
+        cmbLoai.removeAllItems();
+        List<LoaiSP> listLoai = loaiServiceImp.getDanhSach();
+        cmbLoai.addItem("0-Chọn loại");
+        for (LoaiSP loaiSP : listLoai) {
+            cmbLoai.addItem(loaiSP.getMaLoai() + "-" + loaiSP.getTenLoai());
+
+        }
+        cmbLoai.addItem("khác");
+    }
+
+    private void loadDataLenBangSanPham() {
+        sanPhamServiceImp = new SanPhamServiceImp();
+
+        dtmSanPham.setRowCount(0);
+        List<SanPham> listSP = sanPhamServiceImp.getListSP();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        DecimalFormat dcf = new DecimalFormat("###,###");
+
+        for (SanPham sp : listSP) {
+            Vector vec = new Vector();
+            vec.add(sp.getMaSP());
+            vec.add(sp.getTenSP());
+            vec.add(sp.getLoaiSP().getTenLoai());
+            vec.add(dcf.format(sp.getDonGia()));
+            vec.add(dcf.format(sp.getSoLuong()));
+            vec.add(sp.getDonViTinh());
+            vec.add(sp.getHinhAnh());
+
+            dtmSanPham.addRow(vec);
+        }
+    }
+
+    private void xuLyClickTblSanPham() {
+        int row = tblSanPham.getSelectedRow();
+        if (row > -1) {
+            String ma = tblSanPham.getValueAt(row, 0) + "";
+            String ten = tblSanPham.getValueAt(row, 1) + "";
+            String loai = tblSanPham.getValueAt(row, 2) + "";
+            String donGia = tblSanPham.getValueAt(row, 3) + "";
+            String soLuong = tblSanPham.getValueAt(row, 4) + "";
+            String donViTinh = tblSanPham.getValueAt(row, 5) + "";
+            String anh = tblSanPham.getValueAt(row, 6) + "";
+
+            txtMa.setText(ma);
+            txtTen.setText(ten);
+            txtdonGia.setText(donGia);
+            txtsoLuong.setText(soLuong);
+            txtdonViTinh.setText(donViTinh.replace(",", ""));
+
+            int flag = 0;
+            for (int i = 0; i < cmbLoai.getItemCount(); i++) {
+                if (cmbLoai.getItemAt(i).contains(loai)) {
+                    flag = i;
+                    break;
+                }
+            }
+            cmbLoai.setSelectedIndex(flag);
+            loadAnh("image/SanPham/" + anh);
+
+        }
+    }
+
+    private void loadAnh(String anh) {
+        lblAnhSP.setIcon(getAnhSP(anh));
+    }
+
+    private void xulyThemLoai() {
+        int x = cmbLoai.getSelectedIndex();
+        if (x == cmbLoai.getItemCount() - 1) {
+            DlgQuanLyLoai loaiGUI = new DlgQuanLyLoai();
+            loaiGUI.setVisible(true);
+            loadDataCmbLoai();
+        }
+    }
+
+    private void xuLyChonAnh() {
+        JFileChooser fileChooser = new JFileChooser("image/SanPham/");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Tệp hình ảnh", "jpg", "png", "jpeg");
+        fileChooser.setFileFilter(filter);
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            fileAnhSP = fileChooser.getSelectedFile();
+            lblAnhSP.setIcon(getAnhSP(fileAnhSP.getPath()));
+        }
+    }
+
+    private void xuLyThemSanPham() {
+        String anh = fileAnhSP.getName();
+        System.out.println(fileAnhSP.getName());
+        boolean flag = sanPhamServiceImp.themSP(txtTen.getText(),
+                cmbLoai.getSelectedItem() + "",
+                txtsoLuong.getText(),
+                txtdonViTinh.getText(),
+                anh,
+                txtdonGia.getText());
+        if (flag) {
+            loadDataLenBangSanPham();
+            luuFileAnh();
+        }
+    }
+
+    private void luuFileAnh() {
+        BufferedImage blmage = null;
+        try {
+            File initialImage = new File(fileAnhSP.getPath());
+            blmage = ImageIO.read(initialImage);
+            ImageIO.write(blmage, "png", new File("image/SanPham/" + fileAnhSP.getName()));
+
+        } catch (Exception e) {
+            System.out.println("Exception occured :" + e.getMessage());
+        }
+    }
+
+    private void xuLyTimKiem() {
+        String ten = txtTimKiem.getText().toLowerCase();
+//         sanPhamServiceImp = new SanPhamServiceImp();
+        dtmSanPham.setRowCount(0);
+        List<SanPham> listSP = sanPhamServiceImp.getListSPByName(ten);
+        DecimalFormat dcf = new DecimalFormat("###,###");
+        for (SanPham sp : listSP) {
+            Vector vec = new Vector();
+            vec.add(sp.getMaSP());
+            vec.add(sp.getTenSP());
+            vec.add(sp.getLoaiSP().getTenLoai());
+            vec.add(dcf.format(sp.getDonGia()));
+            vec.add(dcf.format(sp.getSoLuong()));
+            vec.add(sp.getDonViTinh());
+            vec.add(sp.getHinhAnh());
+
+            dtmSanPham.addRow(vec);
+        }
+
+        MyDialogCommon dlg = new MyDialogCommon("kq: " + listSP.size(), MyDialogCommon.INFO_DIALOG);
+
+    }
+
+    private void xuLySuaSanPham() {
+        String anh = fileAnhSP.getName();
+        System.out.println(fileAnhSP.getName());
+        boolean flag = sanPhamServiceImp.suaSP(txtMa.getText(), txtTen.getText(),
+                cmbLoai.getSelectedItem() + "",
+                txtsoLuong.getText(),
+                txtdonViTinh.getText(),
+                anh,
+                txtdonGia.getText());
+        if (flag) {
+            loadDataLenBangSanPham();
+            luuFileAnh();
+        }
+    }
+
+    private void xuLyNhapExcel() {
+        xuLyExcellCommon nhapFile = new xuLyExcellCommon();
+        nhapFile.nhapExcel(tblSanPham);
+
+        int row = tblSanPham.getRowCount();
+        for (int i = 0; i < row; i++) {
+            String ten = tblSanPham.getValueAt(i, 1) + "";
+            String loai = tblSanPham.getValueAt(i, 2) + "";
+            String donGia = tblSanPham.getValueAt(i, 3) + "";
+            String soLuong = tblSanPham.getValueAt(i, 4) + "";
+            String donViTinh = tblSanPham.getValueAt(i, 5) + "";
+            String anh = tblSanPham.getValueAt(i, 6) + "";
+
+            sanPhamServiceImp.nhapSPTuExcel(ten, loai, soLuong, donViTinh, anh, donGia);
+            loadDataLenBangSanPham();
+        }
+    }
+
+    private void xuLyXuatExcel() {
+        xuLyExcellCommon xuatFile = new xuLyExcellCommon();
+        xuatFile.XuatFileExcel(tblSanPham);
     }
 }
