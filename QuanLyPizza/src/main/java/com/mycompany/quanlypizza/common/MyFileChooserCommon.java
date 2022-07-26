@@ -23,7 +23,7 @@ public class MyFileChooserCommon extends JFileChooser {
     // blank icon sẽ sử dụng khi load
     private static final Image LOADING_IMAGE = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
     //lọc file
-    private final Pattern imageFilePattern = Pattern.compile(".+?\\(png|jpe?g|gif|tiff?)$", Pattern.CASE_INSENSITIVE);
+    private final Pattern imageFilePattern = Pattern.compile(".+?\\.(png|jpe?g|gif|tiff?)$", Pattern.CASE_INSENSITIVE);
     //gom rác tự động
     private final Map imageCache = new WeakHashMap();
 
