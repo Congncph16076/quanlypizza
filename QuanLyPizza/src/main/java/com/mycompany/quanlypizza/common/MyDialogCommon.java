@@ -83,6 +83,7 @@ public class MyDialogCommon extends JDialog {
         pnTop.add(lblIcon, BorderLayout.CENTER);
         pnBottom.add(lblContent);
         pnButton.add(btnOK);
+        pnButton.add(btnCancel);
 
         JPanel pnHeader = new JPanel();
         pnHeader.setLayout(new FlowLayout(FlowLayout.RIGHT));
