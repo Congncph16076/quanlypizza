@@ -182,10 +182,10 @@ public class MainQuanLyView extends JFrame{
         pnKhachHang.add(khachHangPanel, BorderLayout.CENTER);
         lblKhachHang.setVisible(true);
         
-//        nhanVienPanel = new PnQuanLyNhanVienView();
-//        pnNhanVien.setLayout(new BorderLayout());
-//        pnNhanVien.add(nhanVienPanel, BorderLayout.CENTER);
-//        lblNhanVien.setVisible(true);
+        nhanVienPanel = new PnQuanLyNhanVienView();
+        pnNhanVien.setLayout(new BorderLayout());
+        pnNhanVien.add(nhanVienPanel, BorderLayout.CENTER);
+        lblNhanVien.setVisible(true);
         
         
         pnMain.add(pnCard);

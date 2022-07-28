@@ -32,10 +32,23 @@ public class TaiKhoan implements Serializable{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Quyen", referencedColumnName = "Quyen")
     private PhanQuyen phanQuyen;
+    
+     @Column(name = "TrangThai")
+    private String trangThai;
 
     public TaiKhoan() {
     }
 
+    public TaiKhoan(int maTK, NhanVien nhanVien, String tenDangNhap, String matKhau, PhanQuyen phanQuyen, String trangThai) {
+        this.maTK = maTK;
+        this.nhanVien = nhanVien;
+        this.tenDangNhap = tenDangNhap;
+        this.matKhau = matKhau;
+        this.phanQuyen = phanQuyen;
+        this.trangThai = trangThai;
+    }
+
+    
     public TaiKhoan(int maTK, NhanVien nhanVien, String tenDangNhap, String matKhau, PhanQuyen phanQuyen) {
         this.maTK = maTK;
         this.nhanVien = nhanVien;
@@ -82,6 +95,14 @@ public class TaiKhoan implements Serializable{
 
     public void setPhanQuyen(PhanQuyen phanQuyen) {
         this.phanQuyen = phanQuyen;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 
     
