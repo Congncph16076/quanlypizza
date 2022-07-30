@@ -54,8 +54,10 @@ public class MainQuanLyView extends JFrame{
     JPanel  pnTille,pnMenuLeft,pnCard,pnBanHang,pnKhuyenMai,pnNhapHang
             ,pnSanPham,pnNhanVien,pnKhachHang,pnThongKe;
     
-    PnQuanLyKhuyenMai khuyenMaiPanel;
+    PnQuanLyKhuyenMaiView khuyenMaiPanel;
     PnQuanLyNhanVienView nhanVienPanel;
+    PnQuanLySanPhamView sanPhamPanel;
+    PnQuanLyKhachHangView khachHangPanel;
     
     JLabel btnClose,btnMinimize,lblBanHang,lblKhuyenMai,lblNhapHang
             ,lblSanPham,lblNhanVien,lblKhachHang,lblThongKe;
@@ -166,10 +168,19 @@ public class MainQuanLyView extends JFrame{
         
         //ADD panel bán hàng + khuyến mãi (không phân quyền)
         
-        khuyenMaiPanel = new PnQuanLyKhuyenMai();
+        khuyenMaiPanel = new PnQuanLyKhuyenMaiView();
         pnKhuyenMai.setLayout(new BorderLayout());
         pnKhuyenMai.add(khuyenMaiPanel, BorderLayout.CENTER);
         
+        sanPhamPanel = new PnQuanLySanPhamView();
+        pnSanPham.setLayout(new BorderLayout());
+        pnSanPham.add(sanPhamPanel, BorderLayout.CENTER);
+        lblSanPham.setVisible(true);
+        
+        khachHangPanel = new PnQuanLyKhachHangView();
+        pnKhachHang.setLayout(new BorderLayout());
+        pnKhachHang.add(khachHangPanel, BorderLayout.CENTER);
+        lblKhachHang.setVisible(true);
         
         nhanVienPanel = new PnQuanLyNhanVienView();
         pnNhanVien.setLayout(new BorderLayout());
