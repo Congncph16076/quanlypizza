@@ -219,5 +219,13 @@ public class SanPhamServiceImp implements SanPhamService {
     public Boolean xoaSP(String ma) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    public  String getTenSP(int maSP){
+        for (SanPham sp : listSP) {
+            if (sp.getMaSP() == maSP) {
+                return sp.getTenSP();
+            }
+        }
+        return "";
+    }
 }
