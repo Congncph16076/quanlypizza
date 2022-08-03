@@ -2,11 +2,20 @@ package com.mycompany.quanlypizza.view;
 
 import com.mycompany.quanlypizza.common.MyTableCommon;
 import com.mycompany.quanlypizza.common.TransparentPanelCommon;
+import com.mycompany.quanlypizza.enity.KhachHang;
 import static com.mycompany.quanlypizza.main.Main.changLNF;
+import com.mycompany.quanlypizza.service.KhachHangServiceImp;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +24,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 public class PnQuanLyKhachHangView extends JPanel {
@@ -24,6 +35,8 @@ public class PnQuanLyKhachHangView extends JPanel {
         addControls();
         addEvents();
     }
+
+     KhachHangServiceImp khachHangServiceImp = new KhachHangServiceImp();
 
     final Color colorPanel = new Color(247, 247, 247);
     JButton btnReset;
@@ -211,9 +224,156 @@ public class PnQuanLyKhachHangView extends JPanel {
     }
 
     private void addEvents() {
+         btnReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadDataLenTableKhachHang();
+                txtMa.setText("");
+                txtHo.setText("");
+                txtTen.setText("");
+                txtTongChiTieu.setText("");
+                txtTukhoa.setText("");
+                txtSdt.setText("");
+                txtMinchiTieu.setText("");
+                txtMaxChiTieu.setText("");
+                cmbGioiTinh.setSelectedIndex(0);
+            }
+        });
+         tblKhachHang.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyClicktblKH();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+
+        });
+         btnThem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyThemKhachHang();
+            }
+
+        });
+        btnSua.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLySuaKhachHang();
+            }
+        });
+        btnXoa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyXoaKhachHang();
+            }
+        });
+        txtTukhoa.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                xuLyLiveSearch();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                xuLyLiveSearch();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                xuLyLiveSearch();
+            }
+        });
+        btnTim.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyTimKiemTheoKhoang();
+            }
+
+        });
+         
     }
 
     private void loadDataLenTableKhachHang() {
+        khachHangServiceImp.docDanhSach();
+        List<KhachHang> dskh =  khachHangServiceImp.getListKhachHang();
+        loadDataLenTableKhachHang(dskh);
+    }
+    
+    private void loadDataLenTableKhachHang(List<KhachHang> listKH) {
+        dtmKhachHang.setRowCount(0);
+        DecimalFormat dcf = new DecimalFormat("###,###");
+//        List<KhachHang> dskh = khachHangServiceImp.getListKhachHang();
+        for (KhachHang kh : listKH) {
+            Vector vec = new Vector();
+            vec.add(kh.getMaKH());
+            vec.add(kh.getHo());
+            vec.add(kh.getTen());
+            vec.add(kh.getSdt());
+            vec.add(kh.getGioiTinh());
+            vec.add(dcf.format(kh.getTongChiTieu()));
+            dtmKhachHang.addRow(vec);
+        }
+    }
+
+    private void xuLyClicktblKH() {
+        int row = tblKhachHang.getSelectedRow();
+        if (row > -1) {
+            txtMa.setText(tblKhachHang.getValueAt(row, 0) + "");
+            txtHo.setText(tblKhachHang.getValueAt(row, 1) + "");
+            txtTen.setText(tblKhachHang.getValueAt(row, 2) + "");
+            txtSdt.setText(tblKhachHang.getValueAt(row, 3) + "");
+            txtTongChiTieu.setText(tblKhachHang.getValueAt(row, 5) + "");
+            int index = tblKhachHang.getValueAt(row, 4).equals("Nam") ? 1 : 2;
+            cmbGioiTinh.setSelectedIndex(index);
+        }
+    }
+
+    private void xuLyThemKhachHang() {
+        if (khachHangServiceImp.themKhachHang(txtHo.getText(), txtTen.getText(),
+                txtSdt.getText(), cmbGioiTinh.getSelectedItem() + "")) {
+            btnReset.doClick();
+        }
+    }
+
+    private void xuLySuaKhachHang() {
+        if (khachHangServiceImp.suaKhachHang(txtMa.getText(), txtHo.getText(), txtTen.getText(),
+                txtSdt.getText(), cmbGioiTinh.getSelectedItem() + "")) {
+           
+            btnReset.doClick();
+        }
+    }
+
+    private void xuLyXoaKhachHang() {
+        if (khachHangServiceImp.xoaKhachHang(txtMa.getText())) {
+            btnReset.doClick();
+        }
+    }
+
+    private void xuLyLiveSearch() {
+        List<KhachHang> dskh = khachHangServiceImp.timKiemKhachHang(txtTukhoa.getText());
+        loadDataLenTableKhachHang(dskh);
+    }
+
+    private void xuLyTimKiemTheoKhoang() {
+        List<KhachHang> dskh = khachHangServiceImp.timKiemKhachHang(txtMinchiTieu.getText(), txtMaxChiTieu.getText());
+        if (dskh == null) {
+            return;
+        }
+        loadDataLenTableKhachHang(dskh);
     }
 
 }
