@@ -6,7 +6,9 @@
 package com.mycompany.quanlypizza.view;
 
 import com.mycompany.quanlypizza.common.TransparentPanelCommon;
+import com.mycompany.quanlypizza.enity.ThongKe;
 import com.mycompany.quanlypizza.main.Main;
+import com.mycompany.quanlypizza.service.ThongKeServiceImp;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -15,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,6 +29,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
@@ -38,6 +42,8 @@ public class PnQuanLyThongKe extends JPanel {
         addControls();
         addEvents();
     }
+    private DecimalFormat dcf = new DecimalFormat("###,###");
+    ThongKeServiceImp thongKeServiceImp = new ThongKeServiceImp();
     //ThongKeBUS thongKeBUS = new ThongKeBUS();
     final Color colorPanel = new Color(56, 56, 56);
     JLabel lblThongKeThucDon, lblThongKeKhachHang, lblThongKeNhanVien, lblThongKeDoanhThu;
@@ -244,15 +250,15 @@ public class PnQuanLyThongKe extends JPanel {
         pnThongKeChiTiet.add(lblSoLuong5);
 
         //========BIỂU ĐỒ CỘT=============
-//        pnChart = new TransparentPanelCommon();
-//        pnChart.setBounds(0, 398, 1030, 441);
-//
-//        chartPanel = new ChartPanel(createChart());
-//        chartPanel.setPreferredSize(new Dimension(1030, 441));
-//
-//        pnChart.add(chartPanel);
-//        //================================
-//        pnThongKeChiTiet.add(pnChart);
+        pnChart = new TransparentPanelCommon();
+        pnChart.setBounds(0, 398, 1030, 441);
+
+        chartPanel = new ChartPanel(createChart());
+        chartPanel.setPreferredSize(new Dimension(1030, 441));
+
+        pnChart.add(chartPanel);
+        //================================
+        pnThongKeChiTiet.add(pnChart);
         pnMain.add(pnThongKeChiTiet, "2");
 
         this.add(pnMain, BorderLayout.CENTER);
@@ -260,34 +266,33 @@ public class PnQuanLyThongKe extends JPanel {
     }
 
     private void addEvents() {
-//         btnView.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                hienThiThongKe();
-//                veLaiChart();
-//                cardLayoutThongKe.show(pnMain, "2");
-//            }       
-//        });
-//          btnBack.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                hienThiThongKe();
-//                cardLayoutThongKe.show(pnMain, "1");
-//            }
-//        });
-//          cmbNam.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                hienThiThongKe();
-//            }
-//        });
-        //    btn_filter.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                DlgLocThongKe dlg = new DlgLocThongKe();
-//                dlg.setVisible(true);
-//            }
-//        });
+        btnView.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                hienThiThongKe();
+                veLaiChart();
+                cardLayoutThongKe.show(pnMain, "2");
+            }
+        });
+        btnBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                hienThiThongKe();
+                cardLayoutThongKe.show(pnMain, "1");
+            }
+        });
+        cmbNam.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                hienThiThongKe();
+            }
+        });
+        btn_filter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
 //    private JFreeChart createChart() {
@@ -297,15 +302,56 @@ public class PnQuanLyThongKe extends JPanel {
 //                createDataset(), PlotOrientation.VERTICAL, false, false, false);
 //        return barChart;
 //    }
-
     private void hienThiThongKe() {
+        ThongKe thongKe = thongKeServiceImp.thongKe(Integer.parseInt(cmbNam.getSelectedItem() + ""));
+        lblThongKeThucDon.setText(dcf.format(thongKe.getSoLuongSP()));
+        lblThongKeKhachHang.setText(dcf.format(thongKe.getSoLuongKH()));
+        lblThongKeNhanVien.setText(dcf.format(thongKe.getSoLuongNV()));
+        lblThongKeDoanhThu.setText(dcf.format(thongKe.getTongDoanhThu()));
 
+        lblDoanhThuQuy1.setText(dcf.format(thongKe.getTongThuQuy(1)));
+        lblDoanhThuQuy2.setText(dcf.format(thongKe.getTongThuQuy(2)));
+        lblDoanhThuQuy3.setText(dcf.format(thongKe.getTongThuQuy(3)));
+        lblDoanhThuQuy4.setText(dcf.format(thongKe.getTongThuQuy(4)));
+        lblTongDoanhThu.setText(dcf.format(thongKe.getTongDoanhThu()));
+
+        lblMon1.setText(thongKe.getTopSanPhamBanChay().get(0).getTenSP());
+        lblMon2.setText(thongKe.getTopSanPhamBanChay().get(1).getTenSP());
+        lblMon3.setText(thongKe.getTopSanPhamBanChay().get(2).getTenSP());
+        lblMon4.setText(thongKe.getTopSanPhamBanChay().get(3).getTenSP());
+        lblMon5.setText(thongKe.getTopSanPhamBanChay().get(4).getTenSP());
+
+        lblSoLuong1.setText(thongKe.getTopSanPhamBanChay().get(0).getSoLuong() + "");
+        lblSoLuong2.setText(thongKe.getTopSanPhamBanChay().get(1).getSoLuong() + "");
+        lblSoLuong3.setText(thongKe.getTopSanPhamBanChay().get(2).getSoLuong() + "");
+        lblSoLuong4.setText(thongKe.getTopSanPhamBanChay().get(3).getSoLuong() + "");
+        lblSoLuong5.setText(thongKe.getTopSanPhamBanChay().get(4).getSoLuong() + "");
     }
 
     private void veLaiChart() {
-        
+        pnChart.removeAll();
+
+        chartPanel = new ChartPanel(createChart());
+        chartPanel.setPreferredSize(new Dimension(1030, 441));
+        pnChart.add(chartPanel);
     }
 
-//    private CategoryDataset createDataset() {
-//    }
+    private JFreeChart createChart() {
+        JFreeChart barChart = ChartFactory.createBarChart(
+                "Doanh thu năm " + cmbNam.getSelectedItem() + "",
+                "Tháng",
+                "Doanh thu",
+                createDataSet(), PlotOrientation.VERTICAL, false, false, false);
+        return barChart;
+    }
+
+    private CategoryDataset createDataSet() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (int i = 1; i <= 12; i++) {
+            double value = thongKeServiceImp.getDoanhThuThang(i,
+                    Integer.parseInt(cmbNam.getSelectedItem() + ""));
+            dataset.addValue(value, "Doanh thu", i + "");
+        }
+        return dataset;
+    }
 }
