@@ -6,13 +6,18 @@
 package com.mycompany.quanlypizza.view;
 
 import com.mycompany.quanlypizza.common.ImagePanelCommon;
+import com.mycompany.quanlypizza.common.MyDialogCommon;
+import com.mycompany.quanlypizza.enity.TaiKhoan;
 import com.mycompany.quanlypizza.main.Main;
+import com.mycompany.quanlypizza.service.DangNhapServiceIMP;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
@@ -132,10 +137,85 @@ public class DangNhapView extends JFrame {
                btnExit.setIcon(new ImageIcon("image/LoginUI/btn-close.png"));
             }
         });
+        txtUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               txtPassword.requestFocus();
+            }
+        });
+        txtPassword.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               xuLyDangNhap();
+            } 
+        });
+        btnForgot.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyQuenMatKhau();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                btnForgot.setIcon(new ImageIcon("image/LoginUI/btn-forgot--hover.png"));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                btnForgot.setIcon(new ImageIcon("image/LoginUI/btn-forgot.png"));
+            }
+
+           
+        }
+        );
+        btnLogin.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyDangNhap();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                btnLogin.setIcon(new ImageIcon("image/LoginUI/btn-login--hover.png"));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                btnLogin.setIcon(new ImageIcon("image/LoginUI/btn-login.png"));
+            }
+        });
     }
 
     private void xuLyTaiKhoanDaGhiNho() {
-
+            DangNhapServiceIMP dangNhapIMP = new DangNhapServiceIMP();
+        String line = dangNhapIMP.getTaiKhoanGhiNho();
+        try {
+            String[] arr = line.split(" | ");
+            ckbRemember.setSelected(true);
+            txtUser.setText(arr[0]);
+            txtPassword.setText(arr[0]);
+            txtUser.requestFocus();
+        } catch (Exception e) {
+            txtUser.setText("");
+            txtPassword.setText("");
+            txtUser.requestFocus();
+        }
     }
 
     private void xuLyThoat() {
@@ -147,4 +227,17 @@ public class DangNhapView extends JFrame {
         this.setIconImage(icon);
         this.setVisible(true);
     }
+    private void xuLyDangNhap() {
+          DangNhapServiceIMP dangNhapIMP = new DangNhapServiceIMP();
+          TaiKhoan tk = dangNhapIMP.getTaiKhoanDangNhap(txtUser.getText(), txtPassword.getText(), ckbRemember.isSelected());
+          if(tk != null){
+              this.dispose();
+              MainQuanLyView view = new MainQuanLyView();
+              this.dispose();
+              view.showWindow();
+          }
+        }
+    private void xuLyQuenMatKhau() {
+new MyDialogCommon("Xin liên hệ Admin để giải quyết!", MyDialogCommon.INFO_DIALOG);            }
 }
+
