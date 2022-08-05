@@ -132,3 +132,26 @@ public class SanPhamRespository {
     }
     
 }
+
+public  Boolean suaSoLuongSP(int ma, int soLuongMat){
+        Transaction trans = null;
+        SanPham sp = getSPByID(ma);
+        int soLuong = sp.getSoLuong();
+        sp.setSoLuong(soLuong + soLuongMat);
+        try(Session session = Connect.getFACTORY().openSession()) {
+            trans = session.beginTransaction();
+            Query query = session.createQuery("update SanPham set "
+                    + "soLuong = :soLuong "
+                    + "where maSP = :maSP");
+            query.setParameter("soLuong", sp.getSoLuong());
+            query.setParameter("maSP", ma);
+             query.executeUpdate();
+             trans.commit();
+             return true;
+        } catch (Exception e) {
+            trans.rollback();
+            e.printStackTrace();
+        }
+        return false;
+    }
+    

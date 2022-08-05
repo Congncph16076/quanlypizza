@@ -1,8 +1,23 @@
 package com.mycompany.quanlypizza.view;
 
+import com.mycompany.quanlypizza.common.MyDialogCommon;
 import com.mycompany.quanlypizza.common.MyTableCommon;
 import com.mycompany.quanlypizza.common.TransparentPanelCommon;
+import com.mycompany.quanlypizza.enity.CTHoaDon;
+import com.mycompany.quanlypizza.enity.HoaDon;
+import com.mycompany.quanlypizza.enity.LoaiSP;
+import com.mycompany.quanlypizza.enity.NhanVien;
+import com.mycompany.quanlypizza.enity.SanPham;
 import com.mycompany.quanlypizza.main.Main;
+import com.mycompany.quanlypizza.repository.DangNhapRepo;
+import com.mycompany.quanlypizza.repository.HoaDonRepo;
+import com.mycompany.quanlypizza.repository.SanPhamRespository;
+import com.mycompany.quanlypizza.service.CTHoaDonServiceImp;
+import com.mycompany.quanlypizza.service.DangNhapService;
+import com.mycompany.quanlypizza.service.HoaDonServiceImp;
+import com.mycompany.quanlypizza.service.LoaiServiceImp;
+import com.mycompany.quanlypizza.service.NhanVienServiceImp;
+import com.mycompany.quanlypizza.service.SanPhamServiceImp;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -11,16 +26,22 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -38,6 +59,13 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.text.NumberFormatter;
 
 public class PnQuanLyBanHangView extends JPanel {
+    private SanPhamServiceImp sanPhamServiceImp = new SanPhamServiceImp();
+    private HoaDonServiceImp hoaDonServiceImp = new HoaDonServiceImp();
+    private NhanVienServiceImp nhanVienServiceImp = new NhanVienServiceImp();
+    private LoaiServiceImp loaiServiceImp = new LoaiServiceImp();
+    private DangNhapRepo dangNhapRepo = new DangNhapRepo();
+    private SanPhamRespository sanPhamRespository = new SanPhamRespository();
+    HoaDonRepo hoaDonRepo = new HoaDonRepo();
 
     JLabel lblTabbedBanHang, lblTabbedHoaDon;
     final ImageIcon tabbedSelected = new ImageIcon("image/ManagerUI/tabbed-btn--selected.png");
@@ -609,6 +637,12 @@ public class PnQuanLyBanHangView extends JPanel {
     }
 
     private void addEventsBanHang() {
+        btnReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyResetData();
+            }
+        });
             lblTabbedBanHang.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -665,26 +699,289 @@ public class PnQuanLyBanHangView extends JPanel {
                     
                 }
             });
+              tblBanHang.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyClickTblBanHang();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+            });
+              tblGioHang.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyClickTblGioHang();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+            });
+              btnThemVaoGio.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyThemVaoGioHang();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+            });
+              btnXoaSPGioHang.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyXoaSPGioHang();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+            });
+              btnXuatHoaDonSP.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyXuatHoaDonBanHang();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+            });
+              cmbLoaiSPBanHang.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadDataTableSanPhamBan();
+            }
+        });
+
+        txtTenSPBanHang.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyTimKiemTheoTen();
+            }
+        });
+
+        listHoaDon.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyHienCTHoaDon();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        tblCTHoaDon.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                xuLyClickTblCTHoaDon();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        btnResetCTHoaDon.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadDataTblCTHoaDon();
+            }
+        });
+
+        btnResetHoaDon.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadDataListHoaDon();
+                loadDataTblCTHoaDon();
+            }
+        });
+
+        txtMinSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtMaxSearch.requestFocus();
+            }
+        });
+
+        txtMaxSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyTimTheoKhoangGia();
+            }
+        });
+
+        txtMinNgayLap.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtMaxNgayLap.requestFocus();
+            }
+        });
+
+        txtMaxNgayLap.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyTimTheoKhoangNgay();
+            }
+        });
     }
 
     private void loadDataComboboxLoaiBanSP() {
+        
+        cmbLoaiSPBanHang.removeAllItems();
+        cmbLoaiSPBanHang.addItem("0 - Chọn loại");
+        List<LoaiSP> dsl = loaiServiceImp.getDanhSach();
 
+        for (LoaiSP loai : dsl) {
+            if (!loai.getTenLoai().equalsIgnoreCase("Nguyên liệu")) {
+                cmbLoaiSPBanHang.addItem(loai.getMaLoai() + " - " + loai.getTenLoai());
+            }
+        }
     }
 
     private void loadDataComboboxNhanVienBan() {
-
-    }
-
-    private void loadDataListHoaDon() {
-
-    }
-
-    private void loadDataTblCTHoaDon() {
         
+        cmbNhanVienBan.removeAllItems();
+        List<NhanVien> dsnv = nhanVienServiceImp.getDSNV();
+        if (dsnv != null) {
+            for (NhanVien nv : dsnv) {
+                cmbNhanVienBan.addItem(nv.getMaNV() + " - " + nv.getHo() + " " + nv.getTen());
+            }
+        }
+
+        for (int i = 0; i < cmbNhanVienBan.getItemCount(); i++) {
+            String[] cmbValue = cmbNhanVienBan.getItemAt(i).split(" - ");
+            if (cmbValue[0].equals(DangNhapService.taiKhoanLogin.getNhanVien().getMaNV()+ "")) {
+                cmbNhanVienBan.setSelectedIndex(i);
+                break;
+            }
+        }
     }
+
+    DecimalFormat dcf = new DecimalFormat("###,###");
+    
+    private void loadDataListHoaDon() {
+        List<HoaDon> dshd = hoaDonServiceImp.getListHoaDon();
+        addDataListHoaDon(dshd);
+    }
+
 
     private void loadDataTableSanPhamBan() {
+        dtmSanPhamBan.setRowCount(0);
+        List<SanPham> dssp = null;
 
+        if (cmbLoaiSPBanHang.getItemCount() > 0) {
+            String loai = cmbLoaiSPBanHang.getSelectedItem() + "";
+            String loaiArr[] = loai.split("-");
+            String loaiSP = loaiArr[0].trim();
+
+            if (loaiSP.equals("0")) {
+                dssp = sanPhamServiceImp.getListSP();
+            } else {
+                dssp = sanPhamServiceImp.getListSPByCategory(loaiSP);
+            }
+        } else {
+            dssp = sanPhamServiceImp.getListSP();
+        }
+
+        for (SanPham sp : dssp) {
+            Vector vec = new Vector();
+            vec.add(sp.getMaSP());
+            vec.add(sp.getTenSP());
+            vec.add(dcf.format(sp.getDonGia()));
+            vec.add(dcf.format(sp.getSoLuong()));
+            vec.add(sp.getDonViTinh());
+            vec.add(sp.getHinhAnh());
+            dtmSanPhamBan.addRow(vec);
+        }
     }
     
     File fileAnhSP;
@@ -692,7 +989,7 @@ public class PnQuanLyBanHangView extends JPanel {
         src = src.trim().equals("") ? "default.png" : src;
         //xử lý ảnh
         BufferedImage img = null;
-        File fileImg = new File(src);
+        File fileImg = new File("image/SanPham/" + src);
 
         if (!fileImg.exists()) {
             src = "default.png";
@@ -714,5 +1011,264 @@ public class PnQuanLyBanHangView extends JPanel {
 
         return null;
     }
+    
+    private void xuLyClickTblBanHang() {
+        int row = tblBanHang.getSelectedRow();
+        if (row > -1) {
+            String ma = tblBanHang.getValueAt(row, 0) + "";
+            String ten = tblBanHang.getValueAt(row, 1) + "";
+            String donGia = tblBanHang.getValueAt(row, 2) + "";
+            String anh = tblBanHang.getValueAt(row, 5) + "";
+            int soLuong = Integer.parseInt(tblBanHang.getValueAt(row, 3) + "");
+            if (soLuong < 1) {
+                MyDialogCommon dlg = new MyDialogCommon("Sản phẩm đã hết hàng", MyDialogCommon.ERROR_DIALOG);
+                return;
+            }
 
+            SpinnerNumberModel modeSpinner = new SpinnerNumberModel(1, 1, soLuong, 1);
+            spnSoLuongBanHang.setModel(modeSpinner);
+            JFormattedTextField txtSpinner = ((JSpinner.NumberEditor) spnSoLuongBanHang.getEditor()).getTextField();
+            ((NumberFormatter) txtSpinner.getFormatter()).setAllowsInvalid(false);
+            txtSpinner.setEditable(false);
+            txtSpinner.setHorizontalAlignment(JTextField.LEFT);
+
+            txtMaSPBanHang.setText(ma);
+            txtTenSPBanHang.setText(ten);
+            txtDonGiaBanHang.setText(donGia);
+            loadAnh(anh);
+        }
+    }
+    
+    private void loadAnh(String anh) {
+        lblAnhSP.setIcon(getAnhSP(anh));
+    }
+    
+    private void xuLyThemVaoGioHang() {
+        int row = tblBanHang.getSelectedRow();
+        if (row < 0) {
+            return;
+        }
+
+        String ma = txtMaSPBanHang.getText();
+        String ten = txtTenSPBanHang.getText();
+        String donGia = txtDonGiaBanHang.getText();
+        int soLuong = Integer.parseInt(spnSoLuongBanHang.getValue() + "");
+        int soLuongConLai = Integer.parseInt(tblBanHang.getValueAt(tblBanHang.getSelectedRow(), 3) + "");
+
+        if (soLuong > soLuongConLai || soLuongConLai <= 0) {
+            new MyDialogCommon("Sản phẩm đã hết hàng", MyDialogCommon.ERROR_DIALOG);
+            return;
+        }
+
+        txtMaSPBanHang.setText("");
+        txtTenSPBanHang.setText("");
+        txtDonGiaBanHang.setText("");
+        spnSoLuongBanHang.setValue(0);
+
+        if (ma.trim().equalsIgnoreCase(""))
+            return;
+        int key = Integer.parseInt(ma);
+        for (int i = 0; i < tblGioHang.getRowCount(); i++) {
+            int maTbl = Integer.parseInt(tblGioHang.getValueAt(i, 0) + "");
+            if (maTbl == key) {
+                int soLuongAdd = Integer.parseInt(tblGioHang.getValueAt(i, 2) + "");
+                soLuongAdd += soLuong;
+                donGia = donGia.replace(",", "");
+                int donGiaSP = Integer.parseInt(donGia);
+
+                tblGioHang.setValueAt(soLuongAdd, i, 2);
+                tblGioHang.setValueAt(dcf.format(soLuong * donGiaSP), i, 4);
+
+                // cập nhật lại số lượng trong db
+                sanPhamRespository.suaSoLuongSP(key, -soLuong);
+                sanPhamServiceImp.getListSP();
+                loadDataTableSanPhamBan();
+                return;
+            }
+        }
+
+        Vector vec = new Vector();
+        vec.add(ma);
+        vec.add(ten);
+        vec.add(soLuong);
+        vec.add(donGia);
+        donGia = donGia.replace(",", "");
+        int donGiaSP = Integer.parseInt(donGia);
+        vec.add(dcf.format(soLuong * donGiaSP));
+        // cập nhật lại số lượng trong db
+        sanPhamRespository.suaSoLuongSP(key, -soLuong);
+        sanPhamServiceImp.getListSP();
+        loadDataTableSanPhamBan();
+        dtmGioHang.addRow(vec);
+    }
+    
+    private void xuLyXoaSPGioHang() {
+        int row = tblGioHang.getSelectedRow();
+        if (row > -1) {
+            int ma = Integer.parseInt(tblGioHang.getValueAt(row, 0) + "");
+            int soLuong = Integer.parseInt(tblGioHang.getValueAt(row, 2) + "");
+            sanPhamRespository.suaSoLuongSP(ma, soLuong);
+            loadDataTableSanPhamBan();
+            dtmGioHang.removeRow(row);
+        }
+    }
+    
+    private void xuLyXoaSPGioHang(int row) {
+        if (row > -1) {
+            int ma = Integer.parseInt(tblGioHang.getValueAt(row, 0) + "");
+            int soLuong = Integer.parseInt(tblGioHang.getValueAt(row, 2) + "");
+            sanPhamRespository.suaSoLuongSP(ma, soLuong);
+            loadDataTableSanPhamBan();
+        }
+    }
+
+    private void xuLyXuatHoaDonBanHang() {
+        ArrayList<Vector> dsGioHang = new ArrayList<>();
+        int row = tblGioHang.getRowCount();
+        if (row == 0) return;
+        int tongTien = 0;
+        for (int i = 0; i < row; i++) {
+            Vector vec = new Vector();
+            vec.add(tblGioHang.getValueAt(i, 0));
+            vec.add(tblGioHang.getValueAt(i, 1));
+            vec.add(tblGioHang.getValueAt(i, 2));
+            vec.add(tblGioHang.getValueAt(i, 3));
+            vec.add(tblGioHang.getValueAt(i, 4));
+            tongTien += Integer.parseInt((tblGioHang.getValueAt(i, 4) + "").replace(",", ""));
+            dsGioHang.add(vec);
+        }
+
+        XuatHoaDonGUI hoaDonUI = new XuatHoaDonGUI(dsGioHang, tongTien, cmbNhanVienBan.getSelectedItem());
+        hoaDonUI.setVisible(true);
+        if (hoaDonUI.checkBanHang) {
+            dtmGioHang.setRowCount(0);
+        }
+    }
+    
+    private void xuLyClickTblGioHang() {
+        int row = tblGioHang.getSelectedRow();
+        if (row < 0) {
+            return;
+        }
+        String ma = tblGioHang.getValueAt(row, 0) + "";
+        loadAnh(sanPhamServiceImp.getAnh(Integer.parseInt(ma)));
+    }
+
+    private void xuLyTimKiemTheoTen() {
+        String ten = txtTenSPBanHang.getText().toLowerCase();
+        dtmSanPhamBan.setRowCount(0);
+        List<SanPham> dssp = null;
+        dssp = sanPhamServiceImp.getListSPByName(ten);
+
+        for (SanPham sp : dssp) {
+            Vector vec = new Vector();
+            vec.add(sp.getMaSP());
+            vec.add(sp.getTenSP());
+            vec.add(dcf.format(sp.getDonGia()));
+            vec.add(dcf.format(sp.getSoLuong()));
+            vec.add(sp.getDonViTinh());
+            vec.add(sp.getHinhAnh());
+            dtmSanPhamBan.addRow(vec);
+        }
+    }
+    
+    public void xuLyThoat() {
+        int row = tblGioHang.getRowCount();
+        if (row > 0) {
+            for (int i = 0; i < row; i++) {
+                xuLyXoaSPGioHang(i);
+            }
+        }
+    }
+
+
+    private void addDataListHoaDon(List<HoaDon> dshd) {
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        if (dshd != null) {
+            for (HoaDon hd : dshd) {
+                listModel.addElement(hd.getMaHD() + " | " + hd.getNgayLap() + " === " + dcf.format(hd.getTongTien()) + " VND");
+            }
+            listHoaDon.setModel(listModel);
+        }
+    }
+    
+    private void xuLyHienCTHoaDon() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        String hoaDon = listHoaDon.getSelectedValue();
+        String[] stMaHD = hoaDon.split(" | ");
+
+        HoaDon hd = hoaDonServiceImp.getHoaDon(Integer.parseInt(stMaHD[0]));
+        txtMaHD.setText(hd.getMaHD() + "");
+        txtMaKH.setText(hd.getKhachHang().getMaKH()+ "");
+        txtMaNV.setText(hd.getNhanVien().getMaNV()+ "");
+
+        txtNgayLap.setText(sdf.format(hd.getNgayLap()));
+        txtTongTien.setText(dcf.format(hd.getTongTien()));
+        txtGhiChu.setText(hd.getGhiChu());
+
+        // Gọi hiển thị data trên tblCTHoaDon
+        loadDataTblCTHoaDon(stMaHD[0]);
+    }
+
+    private CTHoaDonServiceImp cTHoaDonServiceImp = new CTHoaDonServiceImp();
+
+    private void loadDataTblCTHoaDon() {
+        
+        List<CTHoaDon> listCTHoaDon = cTHoaDonServiceImp.getList();
+        addDataTableCTHoaDon(listCTHoaDon);
+    }
+    
+    private void loadDataTblCTHoaDon(String maHD) {
+        List<CTHoaDon> listCTHoaDon = cTHoaDonServiceImp.getListByMaHD(Integer.parseInt(maHD));
+
+        addDataTableCTHoaDon(listCTHoaDon);
+    }
+    
+    private void addDataTableCTHoaDon(List<CTHoaDon> listCTHoaDon) {
+        
+        dtmCTHoaDon.setRowCount(0);
+        for (CTHoaDon ct : listCTHoaDon) {
+            Vector<String> vec = new Vector<>();
+            vec.add(ct.getHoaDon().getMaHD()+ "");
+            vec.add(ct.getSanPham().getMaSP()+ "");
+            vec.add(ct.getSoLuong() + "");
+            vec.add(dcf.format(ct.getDonGia()));
+            vec.add(dcf.format(ct.getThanhTien()));
+            dtmCTHoaDon.addRow(vec);
+        }
+    }
+    
+    private void xuLyClickTblCTHoaDon() {
+        int row = tblCTHoaDon.getSelectedRow();
+        if (row > -1) {
+            String maHD = tblCTHoaDon.getValueAt(row, 0) + "";
+            String maSP = sanPhamServiceImp.getListSPByID("" + tblCTHoaDon.getValueAt(row, 1)).getTenSP();
+            String soLuong = tblCTHoaDon.getValueAt(row, 2) + "";
+            String donGia = tblCTHoaDon.getValueAt(row, 3) + "";
+            String thanhTien = tblCTHoaDon.getValueAt(row, 4) + "";
+
+            txtMaHDCT.setText(maHD);
+            txtMaSPCT.setText(maSP);
+            txtSoLuongCT.setText(soLuong);
+            txtDonGiaCT.setText(donGia);
+            txtThanhTienCT.setText(thanhTien);
+        }
+    }
+
+    private void xuLyResetData() {
+        loadDataComboboxLoaiBanSP();
+        cmbLoaiSPBanHang.setSelectedIndex(0);
+        loadDataComboboxNhanVienBan();
+    }
+    
+    private void xuLyTimTheoKhoangNgay() {
+        List<HoaDon> listHoaDon = hoaDonServiceImp.getListHoaDonTheoNgay(txtMinNgayLap.getText(), txtMaxNgayLap.getText());
+        addDataListHoaDon(listHoaDon);
+    }
+
+    private void xuLyTimTheoKhoangGia() {
+        List<HoaDon> listHoaDon = hoaDonServiceImp.getListHoaDonTheoGia(Integer.parseInt(txtMinSearch.getText()), Integer.parseInt(txtMaxSearch.getText()));
+        addDataListHoaDon(listHoaDon);
+    }
 }

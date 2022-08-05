@@ -1,10 +1,17 @@
 package com.mycompany.quanlypizza.view;
 
 import com.mycompany.quanlypizza.common.MyTableCommon;
+import com.mycompany.quanlypizza.enity.KhachHang;
+import com.mycompany.quanlypizza.service.KhachHangServiceImp;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -15,7 +22,9 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class DlgTimKhachView extends  JDialog{
-
+    private KhachHangServiceImp khachHangServiceImp = new KhachHangServiceImp();
+    public static KhachHang khachHangTimDuoc = null;
+    
     public DlgTimKhachView() {
         addControls();
         addEvents();
@@ -76,11 +85,79 @@ public class DlgTimKhachView extends  JDialog{
     }
 
     private void addEvents() {
+        txtTuKhoa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadDataLenTable(txtTuKhoa.getText());
+            }
+        });
+
+        btnChon.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyChonKhachHang();
+            }
+        });
+
+        btnThemKhach.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyThemKhach();
+            }
+        });
+    }
+    
+    private void xuLyChonKhachHang() {
+        int row = tblKhachHang.getSelectedRow();
+        if (row > -1) {
+            int ma = Integer.parseInt(tblKhachHang.getValueAt(row, 0) + "");
+            String ho = tblKhachHang.getValueAt(row, 1) + "";
+            String ten = tblKhachHang.getValueAt(row, 2) + "";
+            String gioiTinh = tblKhachHang.getValueAt(row, 3) + "";
+            int tongChiTieu = Integer.parseInt(tblKhachHang.getValueAt(row, 4) + "");
+
+            khachHangTimDuoc = new KhachHang(ma, ho, ten, gioiTinh, tongChiTieu);
+        }
+        this.dispose();
+    }
+
+    private void xuLyThemKhach() {
+        DlgThemKhachHang dlg = new DlgThemKhachHang();
+        dlg.setVisible(true);
+        if (dlg.checkThemKhach) {
+            khachHangServiceImp.docDanhSach();
+            loadDataLenTable();
+        }
     }
 
     private void loadDataLenTable() {
+        dtmKhachHang.setRowCount(0);
+        List<KhachHang> dskh = khachHangServiceImp.getListKhachHang();
+        if (dskh != null) {
+            for (KhachHang kh : dskh) {
+                Vector vec = new Vector();
+                vec.add(kh.getMaKH());
+                vec.add(kh.getHo());
+                vec.add(kh.getTen());
+                vec.add(kh.getGioiTinh());
+                vec.add(kh.getTongChiTieu());
+                dtmKhachHang.addRow(vec);
+            }
+        }
     }
-    
-    
+
+    private void loadDataLenTable(String tuKhoa) {
+        dtmKhachHang.setRowCount(0);
+        List<KhachHang> dskh = khachHangServiceImp.timKiemKhachHang(tuKhoa);
+        for (KhachHang kh : dskh) {
+            Vector vec = new Vector();
+            vec.add(kh.getMaKH());
+            vec.add(kh.getHo());
+            vec.add(kh.getTen());
+            vec.add(kh.getGioiTinh());
+            vec.add(kh.getTongChiTieu());
+            dtmKhachHang.addRow(vec);
+        }
+    }
     
 }
