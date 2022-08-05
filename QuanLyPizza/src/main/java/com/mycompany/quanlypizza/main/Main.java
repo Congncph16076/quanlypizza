@@ -10,10 +10,10 @@ public class Main {
     
     public static void main(String[] args) {
             changLNF("Nimbus");
-//            DangNhapView dn = new DangNhapView();
-//            dn.showWindow();
-MainQuanLyView view = new MainQuanLyView();
-view.showWindow();
+            DangNhapView dn = new DangNhapView();
+            dn.showWindow();
+//MainQuanLyView view = new MainQuanLyView();
+//view.showWindow();
     }
     
     public  static void changLNF(String nameLNF){
