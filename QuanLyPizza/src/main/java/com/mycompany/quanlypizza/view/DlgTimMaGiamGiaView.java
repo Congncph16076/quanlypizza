@@ -5,11 +5,23 @@
  */
 package com.mycompany.quanlypizza.view;
 
+import com.mycompany.quanlypizza.common.MyDialogCommon;
 import com.mycompany.quanlypizza.common.MyTableCommon;
+import com.mycompany.quanlypizza.enity.GiamGia;
+import com.mycompany.quanlypizza.service.GiamGiaServiceImp;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -26,7 +38,13 @@ import javax.swing.table.TableColumnModel;
  * @author Admin
  */
 public class DlgTimMaGiamGiaView extends JDialog{
+    public static GiamGia maGiamTimDuoc = null;
+    private GiamGiaServiceImp giamGiaServiceImp = new GiamGiaServiceImp();
+    private int tongTien = 0;
+    
     public DlgTimMaGiamGiaView(){
+        addControls();
+        addEvents();
         this.setSize(750, 500);
         this.setModal(true);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -91,5 +109,102 @@ public class DlgTimMaGiamGiaView extends JDialog{
         btnChon.setPreferredSize(new Dimension(120, 40));
         btnThoat.setPreferredSize(btnChon.getPreferredSize());
         
+        loadDataLenTable();
+    }
+    
+    private void addEvents() {
+        txtTuKhoa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadDataLenTable(txtTuKhoa.getText());
+            }
+        });
+
+        btnChon.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyChonMaGiam();
+            }
+        });
+
+        btnThoat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyThoat();
+            }
+        });
+    }
+
+    private void xuLyChonMaGiam() {
+        int row = tblMaGiam.getSelectedRow();
+        if (row > -1) {
+            try {
+                if (tblMaGiam.getValueAt(row, 6).equals("Không hiệu lực")) {
+                    new MyDialogCommon("Mã này đã hết hiệu lực!", MyDialogCommon.ERROR_DIALOG);
+                    loadDataLenTable();
+                    return;
+                }
+                int ma = Integer.parseInt(tblMaGiam.getValueAt(row, 0) + "");
+                String ten = tblMaGiam.getValueAt(row, 1) + "";
+                int phanTram = Integer.parseInt(tblMaGiam.getValueAt(row, 2) + "");
+                String dieuKienst = tblMaGiam.getValueAt(row, 3) + "";
+                dieuKienst = dieuKienst.replace(">", "");
+                dieuKienst = dieuKienst.replace(",", "");
+                int dieuKien = Integer.parseInt(dieuKienst);
+
+                if(dieuKien > tongTien) {
+                    new MyDialogCommon("Không đủ điều kiện áp dụng mã giảm này!", MyDialogCommon.ERROR_DIALOG);
+                    return;
+                }
+                
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                Date ngayBD = sdf.parse(tblMaGiam.getValueAt(row, 4) + "");
+                Date ngayKT = sdf.parse(tblMaGiam.getValueAt(row, 5) + "");
+
+                maGiamTimDuoc = new GiamGia();
+                maGiamTimDuoc.setMaGiam(ma);
+                maGiamTimDuoc.setTenGiamGia(ten);
+                maGiamTimDuoc.setPhanTramGiam(phanTram);
+                maGiamTimDuoc.setDieuKien(dieuKien);
+                maGiamTimDuoc.setNgayBD(ngayBD);
+                maGiamTimDuoc.setNgayKT(ngayKT);
+            } catch (ParseException ex) {
+            }
+        }
+        xuLyThoat();
+    }
+
+    private void xuLyThoat() {
+        dispose();
+    }
+
+    private void loadDataLenTable() {
+        dtmMaGiam.setRowCount(0);
+        giamGiaServiceImp.getDanhSachMaGiam();
+        List<GiamGia> dsg = giamGiaServiceImp.getDanhSachMaGiam();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        DecimalFormat dcf = new DecimalFormat(">###,###");
+        for (GiamGia gg : dsg) {
+            Vector vec = new Vector();
+            vec.add(gg.getMaGiam());
+            vec.add(gg.getTenGiamGia());
+            vec.add(gg.getPhanTramGiam());
+            vec.add(dcf.format(gg.getDieuKien()));
+            vec.add(sdf.format(gg.getNgayBD()));
+            vec.add(sdf.format(gg.getNgayKT()));
+
+            Date now = new Date();
+            if (gg.getNgayBD().before(now) && gg.getNgayKT().after(now)) {
+                vec.add("Có hiệu lực");
+            } else {
+                vec.add("Không hiệu lực");
+            }
+            dtmMaGiam.addRow(vec);
+        }
+    }
+
+    private void loadDataLenTable(String tuKhoa) {
+        TableColumnModel columnModelBanHang = tblMaGiam.getColumnModel();
+
     }
 }
