@@ -131,9 +131,7 @@ public class SanPhamRespository {
         return false;
     }
     
-}
-
-public  Boolean suaSoLuongSP(int ma, int soLuongMat){
+    public  Boolean suaSoLuongSP(int ma, int soLuongMat){
         Transaction trans = null;
         SanPham sp = getSPByID(ma);
         int soLuong = sp.getSoLuong();
@@ -154,4 +152,9 @@ public  Boolean suaSoLuongSP(int ma, int soLuongMat){
         }
         return false;
     }
+    
+}
+
+
+
     

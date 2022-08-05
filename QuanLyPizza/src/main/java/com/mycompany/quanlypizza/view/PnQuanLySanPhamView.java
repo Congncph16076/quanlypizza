@@ -85,7 +85,7 @@ public class PnQuanLySanPhamView extends JPanel {
         this.add(pnTitle);
 
         JPanel pnThongTin = new TransparentPanelCommon();
-        pnThongTin.setLayout(new BoxLayout(pnThongTin, BoxLayout.Y_AXIS));
+        pnThongTin.setLayout(new BoxLayout(pnThongTin, BoxLayout.X_AXIS));
 
         //PANEL INPUT
         JPanel pnTextField = new TransparentPanelCommon();
@@ -165,7 +165,7 @@ public class PnQuanLySanPhamView extends JPanel {
         pnAnh.setLayout(new BoxLayout(pnAnh, BoxLayout.Y_AXIS));
 
         JPanel pnChuaAnh = new TransparentPanelCommon();
-        pnChuaAnh.setPreferredSize(new Dimension(pnAnh.getPreferredSize()));
+        pnChuaAnh.setPreferredSize(new Dimension((int) pnAnh.getPreferredSize().getWidth(),250));
         lblAnhSP = new JLabel();
         lblAnhSP.setPreferredSize(new Dimension(200, 200));
         lblAnhSP.setBorder(BorderFactory.createLineBorder(Color.GRAY));

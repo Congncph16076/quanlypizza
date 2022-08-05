@@ -23,6 +23,7 @@ public class KhachHang implements Serializable{
     @Column(name = "GioiTinh")
     private String gioiTinh;
     
+    @Column(name = "sdt_khachHang")
     private String sdt;
 
     @Column(name = "TongChiTieu")

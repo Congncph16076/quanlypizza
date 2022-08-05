@@ -9,11 +9,13 @@ import com.mycompany.quanlypizza.enity.LoaiSP;
 import com.mycompany.quanlypizza.enity.NhanVien;
 import com.mycompany.quanlypizza.enity.SanPham;
 import com.mycompany.quanlypizza.main.Main;
-import com.mycompany.quanlypizza.repository.DangNhapRepo;
+import com.mycompany.quanlypizza.repository.DangNhapRespository;
+
 import com.mycompany.quanlypizza.repository.HoaDonRepo;
 import com.mycompany.quanlypizza.repository.SanPhamRespository;
 import com.mycompany.quanlypizza.service.CTHoaDonServiceImp;
-import com.mycompany.quanlypizza.service.DangNhapService;
+import com.mycompany.quanlypizza.service.DangNhapServiceIMP;
+import com.mycompany.quanlypizza.service.DangNhapservice;
 import com.mycompany.quanlypizza.service.HoaDonServiceImp;
 import com.mycompany.quanlypizza.service.LoaiServiceImp;
 import com.mycompany.quanlypizza.service.NhanVienServiceImp;
@@ -63,7 +65,7 @@ public class PnQuanLyBanHangView extends JPanel {
     private HoaDonServiceImp hoaDonServiceImp = new HoaDonServiceImp();
     private NhanVienServiceImp nhanVienServiceImp = new NhanVienServiceImp();
     private LoaiServiceImp loaiServiceImp = new LoaiServiceImp();
-    private DangNhapRepo dangNhapRepo = new DangNhapRepo();
+    private DangNhapRespository dangNhapRepo = new DangNhapRespository();
     private SanPhamRespository sanPhamRespository = new SanPhamRespository();
     HoaDonRepo hoaDonRepo = new HoaDonRepo();
 
@@ -297,7 +299,7 @@ public class PnQuanLyBanHangView extends JPanel {
         lblDonGia.setPreferredSize(sizeLabel);
         lblSoLuong.setPreferredSize(sizeLabel);
         spnSoLuongBanHang.setPreferredSize(txtMaSPBanHang.getPreferredSize());
-        cmbNhanVienBan.setPreferredSize(txtMaSPBanHang.getPreferredSize());
+        cmbNhanVienBan.setPreferredSize(new Dimension(240,25));
 
         //<editor-fold defaultstate="collapsed" desc="Ảnh hàng">
         JPanel pnAnhSanPham = new TransparentPanelCommon();
@@ -792,6 +794,7 @@ public class PnQuanLyBanHangView extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 xuLyXuatHoaDonBanHang();
+                btnReset.doClick();
             }
 
             @Override
@@ -912,6 +915,7 @@ public class PnQuanLyBanHangView extends JPanel {
                 xuLyTimTheoKhoangNgay();
             }
         });
+        
     }
 
     private void loadDataComboboxLoaiBanSP() {
@@ -939,7 +943,7 @@ public class PnQuanLyBanHangView extends JPanel {
 
         for (int i = 0; i < cmbNhanVienBan.getItemCount(); i++) {
             String[] cmbValue = cmbNhanVienBan.getItemAt(i).split(" - ");
-            if (cmbValue[0].equals(DangNhapService.taiKhoanLogin.getNhanVien().getMaNV()+ "")) {
+            if (cmbValue[0].equals(DangNhapServiceIMP.taiKhoanLogin.getNhanVien().getMaNV()+ "")) {
                 cmbNhanVienBan.setSelectedIndex(i);
                 break;
             }
@@ -1260,6 +1264,7 @@ public class PnQuanLyBanHangView extends JPanel {
         loadDataComboboxLoaiBanSP();
         cmbLoaiSPBanHang.setSelectedIndex(0);
         loadDataComboboxNhanVienBan();
+        dtmGioHang.setRowCount(0);
     }
     
     private void xuLyTimTheoKhoangNgay() {

@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class PhieuNhap implements Serializable{
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "MaHD", unique = true, nullable = false)
+    @Column(name = "MaPN", unique = true, nullable = false)
     private int maPN;
     
     @ManyToOne(fetch = FetchType.EAGER)

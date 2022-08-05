@@ -12,6 +12,10 @@ public class SanPhamServiceImp implements SanPhamService {
     private SanPhamRespository sanPhamRespository;
     List<SanPham> listSP;
 
+    public SanPhamServiceImp() {
+        getListSP();
+    }
+    
     @Override
     public List<SanPham> getListSP() {
         sanPhamRespository = new SanPhamRespository();

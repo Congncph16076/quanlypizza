@@ -36,7 +36,7 @@ public class MyTableCommon extends JTable{
     public MyTableCommon(DefaultTableModel dtm) {
       this();
       this.setModel(dtm);
-      DefaultTableCellRenderer cellRenderer = new DateCellRenderer();
+      DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
       cellRenderer.setHorizontalAlignment(JLabel.CENTER);
       this.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
       //sắp xếp bảng
