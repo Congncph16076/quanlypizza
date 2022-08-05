@@ -117,7 +117,23 @@ public class SanPhamRespository {
         return false;
     }
     
-    public  Boolean suaSoLuongSP(int ma, int soLuongMat){
+    public Boolean nhapSanPhanTuExcel(SanPham sp){
+        Transaction trans = null;
+        try  (Session session = Connect.getFACTORY().openSession()){
+            trans = session.beginTransaction();
+            session.save(sp);
+            trans.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
+        return false;
+    }
+    
+}
+
+public  Boolean suaSoLuongSP(int ma, int soLuongMat){
         Transaction trans = null;
         SanPham sp = getSPByID(ma);
         int soLuong = sp.getSoLuong();
@@ -139,18 +155,3 @@ public class SanPhamRespository {
         return false;
     }
     
-    public Boolean nhapSanPhanTuExcel(SanPham sp){
-        Transaction trans = null;
-        try  (Session session = Connect.getFACTORY().openSession()){
-            trans = session.beginTransaction();
-            session.save(sp);
-            trans.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            
-        }
-        return false;
-    }
-    
-}
