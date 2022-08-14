@@ -11,7 +11,7 @@ public class TaiKhoanServiceImp implements TaiKhoanService {
 
     private TaiKhoanRespository taiKhoanRespository = new TaiKhoanRespository();
     private NhanVienRepository nhanVienRepository = new NhanVienRepository();
-    private  PhanQuyenRepository  quyenRepository = new PhanQuyenRepository();
+    private PhanQuyenRepository quyenRepository = new PhanQuyenRepository();
 
     @Override
     public String getTenDNTheoMa(String ma) {
@@ -80,7 +80,7 @@ public class TaiKhoanServiceImp implements TaiKhoanService {
         tk.setMatKhau(tenDangNhap);
         tk.setTrangThai("1");
         boolean flag = taiKhoanRespository.themTaiKhoan(tk);
-        
+
         if (flag) {
             new MyDialogCommon("Cấp tài khoản thành công! Mật khẩu là " + tenDangNhap, MyDialogCommon.SUCCESS_DIALOG);
         } else {
@@ -93,7 +93,7 @@ public class TaiKhoanServiceImp implements TaiKhoanService {
     public void khoaTaiKhoan(String ma) {
         int maNV = Integer.parseInt(ma);
         TaiKhoan tk = new TaiKhoan();
-         tk.setNhanVien(nhanVienRepository.getNV(maNV));
+        tk.setNhanVien(nhanVienRepository.getNV(maNV));
         boolean flag = taiKhoanRespository.khoaTaiKhoan(tk);
         if (flag) {
             new MyDialogCommon("Khoá tài khoản thành công! ", MyDialogCommon.SUCCESS_DIALOG);
@@ -121,9 +121,14 @@ public class TaiKhoanServiceImp implements TaiKhoanService {
             new MyDialogCommon("Mật khẩu không khớp ! ", MyDialogCommon.ERROR_DIALOG);
             return false;
         }
-
+        boolean flag = taiKhoanRespository.doiMK(matKhauCu, matKhauMoi);
+        if (flag) {
+            new MyDialogCommon("Đổi thành công \n Mật khẩu mới của bạn là: " + matKhauMoi, MyDialogCommon.SUCCESS_DIALOG);
+        } else {
+            new MyDialogCommon("thất bại", MyDialogCommon.ERROR_DIALOG);
+        }
         //Chưa xong
-        return false;
+        return flag;
     }
 
     @Override

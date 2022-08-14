@@ -2,6 +2,7 @@ package com.mycompany.quanlypizza.repository;
 
 import com.mycompany.quanlypizza.enity.NhanVien;
 import com.mycompany.quanlypizza.enity.TaiKhoan;
+import com.mycompany.quanlypizza.service.DangNhapServiceIMP;
 import com.mycompany.quanlypizza.util.Connect;
 import java.util.List;
 import javax.persistence.Query;
@@ -134,12 +135,14 @@ public class TaiKhoanRespository {
     }
 
     //Chưa xong
-    public boolean doiMK(TaiKhoan tk) {
+    public boolean doiMK(String matKhauCu , String matKhauMoi) {
         Transaction trans = null;
         try (Session session = Connect.getFACTORY().openSession()) {
             trans = session.beginTransaction();
-            Query query = session.createQuery("update TaiKhoan set trangThai =1 where maNV = ?1");
-            query.setParameter(1, tk.getNhanVien().getMaNV());
+           Query query = session.createQuery("update TaiKhoan set matKhau = ?1 where maNV = ?2 AND matKhau= ?3");
+            query.setParameter(1, matKhauMoi);
+            query.setParameter(2, DangNhapServiceIMP.taiKhoanLogin.getNhanVien().getMaNV());
+            query.setParameter(3,matKhauCu);
             query.executeUpdate();
             trans.commit();
             return true;
