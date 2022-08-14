@@ -232,7 +232,7 @@ public class MainQuanLyView extends JFrame {
         btnDoiMK.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                new DlgDoiMatKhau().setVisible(true);
             }
 
             @Override
